@@ -18,9 +18,9 @@ def postComics(token, group_id):
     post_result = postPhoto(
         token, -int(group_id), save_result, comics_info['alt']
     )
-    try: 
+    try:
         os.remove(comics_img)
-    except : 
+    except:
         print(f'File {comics_img} can not be removed')
 
 
