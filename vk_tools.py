@@ -1,23 +1,27 @@
 import requests
 
 
-def getVkRequest(req, payload):
+def get_vk_request(req, payload):
     url = f'https://api.vk.com/method/{req}'
     response = requests.post(url, data=payload)
     response.raise_for_status()
-    return response.json()
+    answer_json = response.json()
+    if 'response' in answer_json:
+        return answer_json['response']
+    elif 'error' in answer_json:
+        raise Exception(answer_json['error']['error_msg'])
 
 
-def getWallUpload(vk_token, group_id):
+def get_wall_upload(vk_token, group_id):
     payload = {
         'access_token': vk_token,
         'v': '5.126',
         'group_id': group_id,
     }
-    return getVkRequest('photos.getWallUploadServer', payload)
+    return get_vk_request('photos.getWallUploadServer', payload)
 
 
-def uploadFile(filename, url):
+def upload_file(filename, url):
     with open(filename, 'rb') as file:
         files = {
             'photo': file,
@@ -27,7 +31,7 @@ def uploadFile(filename, url):
         return response.json()
 
 
-def saveWallPhoto(token, group_id, photo_info):
+def save_wall_photo(token, group_id, photo_info):
     payload = {
         'access_token': token,
         'v': '5.126',
@@ -36,23 +40,23 @@ def saveWallPhoto(token, group_id, photo_info):
         'server': photo_info['server'],
         'hash': photo_info['hash'],
     }
-    return getVkRequest('photos.saveWallPhoto', payload)
+    return get_vk_request('photos.saveWallPhoto', payload)
 
 
-def postPhoto(token, owner_id, save_result, message, from_group=0):
+def post_photo(token, owner_id, save_result, message, from_group=0):
     payload = {
         'access_token': token,
         'v': '5.126',
         'owner_id': owner_id,
         'from_group': from_group,
-        'attachment': getAttachment(save_result),
+        'attachment': get_attachment(save_result),
         'message': message,
     }
-    return getVkRequest('wall.post', payload)
+    return get_vk_request('wall.post', payload)
 
 
-def getAttachment(save_wall_photo_answer):
-    response = save_wall_photo_answer['response'][0]
+def get_attachment(save_wall_photo_answer):
+    response = save_wall_photo_answer[0]
     return 'photo{}_{}'.format(
         response['owner_id'],
         response['id']
