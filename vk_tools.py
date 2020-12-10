@@ -8,8 +8,7 @@ def get_vk_request(req, payload):
     answer_json = response.json()
     if 'response' in answer_json:
         return answer_json['response']
-    elif 'error' in answer_json:
-        raise Exception(answer_json['error']['error_msg'])
+    raise Exception(answer_json['error']['error_msg'])
 
 
 def get_wall_upload(vk_token, group_id):

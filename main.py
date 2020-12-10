@@ -20,8 +20,8 @@ def post_comics(token, group_id):
     )
     try:
         os.remove(comics_img)
-    except:
-        print(f'File {comics_img} can not be removed')
+    except OSError as e:
+        print(f'File {comics_img} can not be removed. Error: {e.strerror}.')
 
 
 def main():
@@ -30,10 +30,9 @@ def main():
     vk_group_id = os.getenv('VK_GROUP_ID')
     try:
         post_comics(vk_token, vk_group_id)
+        print('Комикс опубликован на стене.')
     except Exception as e:
         print(e)
-    else:
-        print('Комикс опубликован на стене.')
 
 
 if __name__ == '__main__':
